@@ -1,19 +1,46 @@
-.popover {
-    --primary: #00e2b2;
-    --popover: #003d2e; /* Dark teal tint blending with primary */
-    --popover-foreground: #a6ffe3; /* Light teal/white for contrast */
-    
-    --popover: #1f2937;           /* Dark slate background, stands out on dark theme */
---popover-foreground: #e0f7f4; /* Light teal-ish text for readability */
+.element {
+    color: var(--muted-foreground);
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: spacing(3); 
+}
 
+.peer {
+  padding-left: 2.25rem;  /* px-9 = 36px */
+  padding-right: 2.25rem;
+}
 
---popover: #1e293b;          /* Dark slate blue-gray, blends with dark theme */
---popover-foreground: #f1f5f9; /* Light slate gray / off-white for text */
+/* Remove default search input UI in WebKit browsers */
+.peer::-webkit-search-cancel-button,
+.peer::-webkit-search-decoration,
+.peer::-webkit-search-results-button,
+.peer::-webkit-search-results-decoration {
+  appearance: none;
+  -webkit-appearance: none;
+}
 
+.element {
+  color: var(--muted-foreground); /* text-muted-foreground */
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
 
---popover: #f0fdfa;           /* very light teal/neutral background */
---popover-foreground: #064e3b; /* dark teal/green for good contrast */
+.element:hover {
+  background-color: transparent;
+}
 
---popover: #0f172a;           /* dark slate/blue background */
---popover-foreground: #00e2b2; /* your primary color for contrast and brand consistency */
+/* focus-visible:ring-ring/50 */
+.element:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--ring-rgb), 0.5);
 }

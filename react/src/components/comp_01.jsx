@@ -1,25 +1,51 @@
 import classes from "./";
 import { RiSearch2Line } from "react-icons/ri";
+import { Field, FieldInput, FieldLabel } from "@/components/ui/field/Field";
+import { Button } from "@/components/ui/button/Button";
+import clsx from "clsx";
 
-const InputStartIconDemo = () => {
-    const id = useId();
+export function PopoverContent({ tokens }) {
     return (
-        <div className="w-full max-w-xs space-y-2">
-            <Label htmlFor={id}>Input with start icon</Label>
-            <div className="relative">
-                <div className="text-muted-foreground pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-3 peer-disabled:opacity-50">
-                    <UserIcon className="size-4" />
-                    <span className="sr-only">User</span>
-                </div>
-                <Input
-                    id={id}
-                    type="text"
-                    placeholder="Username"
-                    className="peer pl-9"
-                />
-            </div>
-        </div>
-    );
-};
+        <>
+            <Field className={classes.header__popoverContentSearch}>
+                <FieldLabel
+                    className={classes.header__popoverContentSearchLabel}>
+                    <div className={classes.header__popoverContentSearchLabel}>
+                        <RiSearch2Line />
+                        <span className="sr-only">Search</span>
+                    </div>
 
-export default InputStartIconDemo;
+                    <Input
+                        id={id}
+                        type="search"
+                        placeholder="Search..."
+                        className={classes.header__popoverContentSearchLabel}
+                    />
+                    <Button
+                        variant="ghost"
+                        className={classes.header__popoverContentSearchLabel}>
+                        <RiSearch2Line />
+                        <span className="sr-only">Search</span>
+                    </Button>
+                </FieldLabel>
+            </Field>
+
+            {tokens.length > 0 ? (
+                <div className={classes.header__popoverContentTokens}>
+                    {tokens.map((token, index) => (
+                        <Button
+                            className={classes.header__popoverContentTokensItem}
+                            key={index}
+                            onClick={() => null}>
+                            //Hello
+                        </Button>
+                    ))}
+                </div>
+            ) : (
+                <div className={classes.header__popoverContentStatus}>
+                    isLoading...
+                </div>
+            )}
+        </>
+    );
+}
