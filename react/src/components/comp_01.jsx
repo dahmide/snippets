@@ -9,7 +9,7 @@ import tokenCatalog from '@/tokens.json';
                 <span className="sr-only">Search</span>
             </div>
 <RotatingText suggestions={tokens?.map((token) => token.name)} />
-            <Input
+            <FieldInput
                 id={id}
                 type="search"
                 placeholder="Search..."
