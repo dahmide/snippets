@@ -1,4 +1,5 @@
 import { Field, FieldInput, FieldLabel } from "@/components/ui/field/Field";
+import tokenCatalog from '@/tokens.json';
 
 <>
     <Field className={classes.header__popoverContentSearch}>
@@ -7,7 +8,7 @@ import { Field, FieldInput, FieldLabel } from "@/components/ui/field/Field";
                 <RiSearch2Line />
                 <span className="sr-only">Search</span>
             </div>
-
+<RotatingText suggestions={tokens?.map((token) => token.name)} />
             <Input
                 id={id}
                 type="search"
@@ -30,7 +31,10 @@ import { Field, FieldInput, FieldLabel } from "@/components/ui/field/Field";
                     className={classes.header__popoverContentTokensItem}
                     key={index}
                     onClick={() => null}>
-                    //Hello
+   <div>                
+ <img src={tokenCatalog.tokens[token.categoryId].imageUrl} />
+</div>
+<span>{token.name}</span>
                 </Button>
             ))}
         </div>
