@@ -7,7 +7,7 @@ import {
 &#128293;
 
 <style>
-.item {
+&Item {
       cursor: pointer;
       margin: 0, spacing(1);
       padding: spacing(1.5), spacing(2.5);
@@ -16,11 +16,11 @@ import {
       gap: spacing(2.5);
       border-radius: var(--radius-sm);
       
-      &__logo {
+      &Logo {
         --size: 32px;
         flex-shrink: 0;
       }
-      &__info {
+      &Info {
         flex-shrink: 0;
         min-width: 0;
         
@@ -34,7 +34,7 @@ import {
           margin-top: spacing(0.25);
         }
       }
-      &__meta {
+      &Meta {
         flex-shrink: 0;
         text-align: right;
         letter-spacing: -0.02em;
