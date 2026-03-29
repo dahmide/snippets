@@ -3,17 +3,18 @@
 <style>
 .item {
       cursor: pointer;
-      margin: 0, 4px;
-      padding: 6px, 10px;
+      margin: 0, spacing(1);
+      padding: spacing(1.5), spacing(2.5);
       display: flex;
       align-items: center;
-      gap: 10px;
-      border-radius: 9px;
+      gap: spacing(2.5);
+      border-radius: var(--radius-sm);
       
       &__logo {
         --size: 32px;
+        @include size(var(--size));
         flex-shrink: 0;
-        border-radius: 8px;
+        border-radius: var(--radius-sm);
       }
       &__info {
         flex-shrink: 0;
@@ -26,7 +27,7 @@
           transition: color 0.15s;
         }
         &Code {
-          margin-top: 1px;
+          margin-top: spacing(0.25);
         }
       }
       &__meta {
