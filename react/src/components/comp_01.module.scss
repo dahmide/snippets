@@ -1,46 +1,21 @@
-.element {
-    color: var(--muted-foreground);
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-left: spacing(3); 
+--size: 32px;
+@include size(var(--size));
+border-radius: 50%;
+border: 2px dashed var(--border);
+display: flex;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+background-color: hsl(var(--surface));
+transition: border 0.4s ease;
+
+&:hover {
+  border-style: solid;
+  border-color: var(--border);
 }
 
-.peer {
-  padding-left: 2.25rem;  /* px-9 = 36px */
-  padding-right: 2.25rem;
-}
-
-/* Remove default search input UI in WebKit browsers */
-.peer::-webkit-search-cancel-button,
-.peer::-webkit-search-decoration,
-.peer::-webkit-search-results-button,
-.peer::-webkit-search-results-decoration {
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-.element {
-  color: var(--muted-foreground); /* text-muted-foreground */
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.element:hover {
-  background-color: transparent;
-}
-
-/* focus-visible:ring-ring/50 */
-.element:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(var(--ring-rgb), 0.5);
+img {
+  @include size(calc(var(--size) * 0.9));
+  border-radius: 0;
+  display: block;
 }
