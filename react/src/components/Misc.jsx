@@ -1,7 +1,7 @@
 import { 
-  RiSearchLine, 
-  RiCloseLine as RiSelectLine, 
-  RiCornerDownLeftLine as RiReturnLine 
+  RiSearchLine,
+  RiCloseLine as RiCancelLine,
+  RiCornerDownLeftLine as RiSelectLine
 } from "react-icons/ri";
 
 &#128293;
