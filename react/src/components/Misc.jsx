@@ -14,7 +14,29 @@ import { RiSearchLine, RiCloseLine as RiCancelLine, RiCornerDownLeftLine as RiRe
         --size: 32px;
         @include size(var(--size));
         flex-shrink: 0;
-        border-radius: var(--radius-sm);
+    
+  
+  @include size(var(--size));
+  border-radius: 50%;
+  border: 4px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  transition: border 0.4s ease;
+
+  &:hover {
+    border-style: solid;
+    border-color: var(--border);
+  }
+
+  img {
+    @include size(calc(var(--size) * 0.9));
+    border-radius: 0;
+    display: block;
+  }
+}
       }
       &__info {
         flex-shrink: 0;
