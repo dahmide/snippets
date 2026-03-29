@@ -1,4 +1,4 @@
-
+import { RiSearchLine, RiCloseLine as RiCancelLine, RiCornerDownLeftLine as RiReturnLine } from "react-icons/ri";
 
 <style>
 .item {
