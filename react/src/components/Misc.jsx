@@ -35,26 +35,24 @@ import { RiSearchLine, RiCloseLine as RiCancelLine, RiCornerDownLeftLine as RiRe
       }
     }
     
-<style>
+</style>
 
-
-<button className={classes.item}>
-      <div className={classes.logo}>
-          <img src="" alt="" />
-      </div>
-      <div className={classes.info}>
-          <span className={classes.name}>
-              {token.name}
-          </span>
-          <span className={classes.code}>
-              {token.name}
-          </span>
-      </div>
-      <div className={classes.meta}>
-          {formatNum()}
-      </div>''
+<button key={index} className={classes.popover__panelTokensItem}>
+  <div className={classes.popover__panelTokensLogo}>
+    <img src="" alt="" />
+  </div>
+  <div className={classes.popover__panelTokensInfo}>
+    <span className={classes.popover__panelTokensInfoName}>
+      {token.name}
+    </span>
+    <span className={classes.popover__panelTokensInfoCode}>
+      {token.name}
+    </span>
+  </div>
+  <div className={classes.popover__panelTokensMeta}>
+    {formatNum(1)}
+  </div>
 </button>
-*/
 
 className={classes.popover__fieldInnerLayout}
 className={classes.popover__fieldInnerLayoutLabel}
