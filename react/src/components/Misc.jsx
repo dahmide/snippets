@@ -52,7 +52,7 @@ function Highlight({ text, query }) {
     
     */
 
-export function formatNumber (number, locale = "en-US", decimals = 2) {
+export function formatNum (number, locale = "en-US", decimals = 2) {
   
  return  number.toLocaleString(locale, { minimumFractionDigits: decimals });
 }
