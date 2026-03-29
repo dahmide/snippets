@@ -52,9 +52,10 @@ function Highlight({ text, query }) {
     
     */
 
-const formatNumber = (number, locale = "en-US", decimals = 2) =>
-  number.toLocaleString(locale, { minimumFractionDigits: decimals });
-
+export function formatNumber (number, locale = "en-US", decimals = 2) {
+  
+ return  number.toLocaleString(locale, { minimumFractionDigits: decimals });
+}
 /*
 
 
