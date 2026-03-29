@@ -1,4 +1,4 @@
-import { RiSearchLine, RiCloseLine as RiSubmitLine, RiCornerDownLeftLine as RiReturnLine } from "react-icons/ri";
+import { RiSearchLine, RiCloseLine as RiSelectLine, RiCornerDownLeftLine as RiReturnLine } from "react-icons/ri";
 
 &#128293;
 
