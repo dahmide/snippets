@@ -58,6 +58,9 @@
 </button>
 */
 
+className={classes.popover__fieldInnerLayout}
+className={classes.popover__fieldInnerLayoutLabel}
+className={classes.popover__fieldInnerLayoutInput}
 
 
 {query ? `No results for ${query}` : "Loading..."}
