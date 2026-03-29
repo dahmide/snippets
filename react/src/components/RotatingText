@@ -1,0 +1,333 @@
+import { useState, useEffect, useRef } from "react";
+
+// ─── clsx ─────────────────────────────────────────────────────────────────────
+const clsx = (...args) =>
+  args
+    .flatMap((a) =>
+      typeof a === "string"
+        ? a
+        : typeof a === "object" && a !== null
+        ? Object.entries(a).filter(([, v]) => Boolean(v)).map(([k]) => k)
+        : []
+    )
+    .filter(Boolean)
+    .join(" ");
+
+// ─── CSS Module classes ───────────────────────────────────────────────────────
+const c = {
+  root: "rt",
+  track: "rt__track",
+  sizer: "rt__sizer",
+  ready: "rt--ready",
+  leave: "rt--leave",
+  enter: "rt--enter",
+};
+
+// ─── RotatingText ─────────────────────────────────────────────────────────────
+export function RotatingText({
+  texts = [],
+  paused = false,
+  timing = 2500,
+  delay = 0,
+  variant = "bounce",
+  className,
+  onTextChange,
+  leaveDuration = 320,
+  enterDuration = 400,
+}) {
+  const [index, setIndex] = useState(0);
+  const [phase, setPhase] = useState("ready");
+  const intervalRef = useRef(null);
+  const timeoutsRef = useRef([]);
+
+  useEffect(() => {
+    if (onTextChange && texts[index] !== undefined) onTextChange(texts[index]);
+  }, [index, texts, onTextChange]);
+
+  useEffect(() => {
+    clearInterval(intervalRef.current);
+    timeoutsRef.current.forEach((t) => clearTimeout(t));
+    timeoutsRef.current = [];
+
+    if (!texts.length || paused || texts.length === 1) return;
+
+    const cycle = () => {
+      setPhase("leave");
+      const t1 = setTimeout(() => {
+        setIndex((i) => (i + 1) % texts.length);
+        setPhase("enter");
+        const t2 = setTimeout(() => setPhase("ready"), enterDuration);
+        timeoutsRef.current.push(t2);
+      }, leaveDuration);
+      timeoutsRef.current.push(t1);
+    };
+
+    // delay is one-time only — interval runs at `timing` after
+    const defer = setTimeout(() => {
+      cycle();
+      intervalRef.current = setInterval(cycle, timing);
+    }, delay);
+    timeoutsRef.current.push(defer);
+
+    return () => {
+      clearInterval(intervalRef.current);
+      timeoutsRef.current.forEach((t) => clearTimeout(t));
+      timeoutsRef.current = [];
+    };
+  }, [texts, timing, paused, leaveDuration, enterDuration, delay]);
+
+  return (
+    <span
+      className={clsx(c.root, className)}
+      data-variant={variant}
+      style={{
+        "--rt-leave": `${leaveDuration}ms`,
+        "--rt-enter": `${enterDuration}ms`,
+      }}
+    >
+      {/* Sizer: invisible copy holds the container's width/height */}
+      <span className={c.sizer} aria-hidden="true">{texts[index]}</span>
+      {/* Track: animated, absolutely positioned over sizer */}
+      <span className={clsx(c.track, c[phase])}>{texts[index]}</span>
+    </span>
+  );
+}
+
+// ─── Demo ─────────────────────────────────────────────────────────────────────
+const SEARCHES = ["flights to Tokyo", "best noise cancelling headphones", "how to make sourdough", "react animation libraries"];
+const ROLES    = ["designers", "engineers", "founders", "dreamers"];
+const HERO     = ["beautiful", "fast", "accessible", "memorable"];
+
+export default function App() {
+  const [inputValue, setInputValue] = useState("");
+  const [paused, setPaused] = useState(false);
+
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Mono:wght@300;400&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #0c0c0e; color: #f0ede8; font-family: 'DM Mono', monospace; min-height: 100vh; }
+
+        .page { max-width: 680px; margin: 0 auto; padding: 64px 24px 96px; }
+        .eyebrow { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #6b6860; margin-bottom: 48px; }
+        h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3rem); font-weight: 400; line-height: 1.15; margin-bottom: 64px; }
+        h1 em { color: #c8f04a; font-style: italic; }
+
+        /* ── Section ── */
+        .section { margin-bottom: 48px; }
+        .section-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #4a4845; margin-bottom: 16px; }
+
+        /* ── Card ── */
+        .card { background: #141416; border: 1px solid #1f1f22; border-radius: 6px; padding: 32px; }
+
+        /* ── Input field ── */
+        .search-wrap {
+          display: flex; align-items: center; gap: 10px;
+          background: #0e0e10; border: 1px solid #2a2a2e;
+          border-radius: 8px; padding: 14px 16px;
+          transition: border-color 0.2s;
+        }
+        .search-wrap:focus-within { border-color: #3e3e48; }
+        .search-icon { color: #3e3e42; flex-shrink: 0; }
+        .search-input {
+          flex: 1; background: transparent; border: none; outline: none;
+          font-family: 'DM Mono', monospace; font-size: 14px; color: #f0ede8;
+          min-width: 0;
+        }
+        .search-input::placeholder { color: transparent; }
+        /* The placeholder sits in a sibling span so RotatingText can animate it */
+        .search-placeholder {
+          position: absolute; pointer-events: none;
+          font-family: 'DM Mono', monospace; font-size: 14px;
+          color: #3e3e42;
+        }
+        .search-field-wrap { position: relative; flex: 1; display: flex; align-items: center; }
+
+        /* ── Prose demo ── */
+        .prose { font-family: 'Playfair Display', serif; font-size: clamp(1.15rem,3vw,1.5rem); color: #f0ede8; line-height: 1.7; }
+        .prose-pause { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+
+        /* ── Bounce hero ── */
+        .hero-bounce { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem,4vw,2.2rem); font-style: italic; color: #c8f04a; }
+
+        .pause-btn {
+          background: transparent; border: 1px solid #2a2a2e; color: #5a5855;
+          font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em;
+          text-transform: uppercase; padding: 7px 14px; border-radius: 3px;
+          cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        }
+        .pause-btn:hover { border-color: #3e3e44; color: #9a9895; }
+        .pause-btn.on { border-color: #c8f04a44; color: #c8f04a; background: #c8f04a0a; }
+
+        /* ════════════════════════════════════════════
+           RotatingText styles
+           (production → RotatingText.module.scss)
+        ════════════════════════════════════════════ */
+        .rt {
+          --rt-timing-enter: var(--rt-enter, 400ms);
+          --rt-timing-leave: var(--rt-leave, 320ms);
+          --rt-ease-enter: cubic-bezier(0.22, 0.68, 0, 1.2);
+          --rt-ease-leave: cubic-bezier(0.40, 0.00, 1, 1.0);
+          --rt-slide-range: 14px;
+          --rt-scale-start: 0.94;
+
+          display: inline-block;
+          position: relative;
+          /* no overflow:hidden here — bounce variant needs visible overshoot */
+        }
+
+        /* Sizer: holds width + height, never visible */
+        .rt__sizer {
+          display: inline-block;
+          visibility: hidden;
+          pointer-events: none;
+          user-select: none;
+        }
+
+        /* Track: floats on top of sizer */
+        .rt__track {
+          position: absolute;
+          left: 0; top: 0;
+          width: 100%;
+          display: inline-block;
+          will-change: transform, opacity;
+          /* default → leave transition */
+          transition:
+            opacity var(--rt-timing-leave) var(--rt-ease-leave),
+            transform var(--rt-timing-leave) var(--rt-ease-leave);
+        }
+
+        /* ── bounce variant ─────────────────────── */
+        .rt[data-variant="bounce"] .rt--ready {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          transition:
+            opacity var(--rt-timing-enter) var(--rt-ease-enter),
+            transform var(--rt-timing-enter) var(--rt-ease-enter);
+        }
+        .rt[data-variant="bounce"] .rt--enter {
+          opacity: 0;
+          transform: translateY(var(--rt-slide-range)) scale(var(--rt-scale-start));
+        }
+        .rt[data-variant="bounce"] .rt--leave {
+          opacity: 0;
+          transform: translateY(calc(var(--rt-slide-range) * -1)) scale(var(--rt-scale-start));
+        }
+
+        /* ── ticker variant ─────────────────────── */
+        .rt[data-variant="ticker"] {
+          overflow: hidden; /* clips the slot */
+          vertical-align: bottom;
+        }
+        .rt[data-variant="ticker"] .rt--ready {
+          opacity: 1;
+          transform: translateY(0);
+          transition:
+            opacity var(--rt-timing-enter) ease-out,
+            transform var(--rt-timing-enter) cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .rt[data-variant="ticker"] .rt--enter {
+          opacity: 0;
+          transform: translateY(110%);
+        }
+        .rt[data-variant="ticker"] .rt--leave {
+          opacity: 0;
+          transform: translateY(-110%);
+        }
+      `}</style>
+
+      <div className="page">
+        <p className="eyebrow">Component / RotatingText</p>
+        <h1>Words that <em>move</em><br />with purpose</h1>
+
+        {/* ── Input field with ticker placeholder ── */}
+        <div className="section">
+          <p className="section-label">ticker — search input placeholder</p>
+          <div className="card">
+            <div className="search-wrap">
+              {/* Search icon */}
+              <svg className="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+
+              <div className="search-field-wrap">
+                <input
+                  className="search-input"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder=" "
+                />
+                {/* Only show placeholder when input is empty */}
+                {inputValue === "" && (
+                  <span className="search-placeholder">
+                    <RotatingText
+                      texts={SEARCHES}
+                      variant="ticker"
+                      timing={2200}
+                      leaveDuration={280}
+                      enterDuration={360}
+                    />
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Bounce in prose ── */}
+        <div className="section">
+          <p className="section-label">bounce — inline in prose</p>
+          <div className="card">
+            <p className="prose">
+              Built for{" "}
+              <RotatingText
+                texts={ROLES}
+                variant="bounce"
+                timing={2000}
+                paused={paused}
+                className="hero-bounce"
+              />
+              {" "}who refuse to ship mediocre products.
+            </p>
+            <div className="prose-pause">
+              <button
+                className={`pause-btn ${paused ? "on" : ""}`}
+                onClick={() => setPaused((p) => !p)}
+              >
+                {paused ? "▶ Resume" : "⏸ Pause"}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Bounce standalone ── */}
+        <div className="section">
+          <p className="section-label">bounce — standalone</p>
+          <div className="card">
+            <RotatingText
+              texts={HERO}
+              variant="bounce"
+              timing={1800}
+              className="hero-bounce"
+            />
+          </div>
+        </div>
+
+        {/* ── Ticker standalone ── */}
+        <div className="section">
+          <p className="section-label">ticker — standalone</p>
+          <div className="card">
+            <RotatingText
+              texts={["Ship faster.", "Scale smarter.", "Build together.", "Sleep better."]}
+              variant="ticker"
+              timing={2000}
+              className="hero-bounce"
+              style={{ color: "#f0ede8", fontStyle: "normal" }}
+            />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
