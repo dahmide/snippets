@@ -1,20 +1,6 @@
-function Highlight({ text, query }) {
-  if (!query) return <span>{text}</span>;
-  const idx = text.toLowerCase().indexOf(query.toLowerCase());
-  if (idx === -1) return <span>{text}</span>;
-  return (
-    <span>
-      {text.slice(0, idx)}
-      <mark style={{ background: "#e8b86d28", color: "#e8b86d", borderRadius: "2px", padding: "0 1px" }}>
-        {text.slice(idx, idx + query.length)}
-      </mark>
-      {text.slice(idx + query.length)}
-    </span>
-  );
-}
 
 
-/*
+<style>
 .item {
       cursor: pointer;
       margin: 0, 4px;
@@ -50,13 +36,7 @@ function Highlight({ text, query }) {
       }
     }
     
-    */
-
-export function formatNum (number, locale = "en-US", decimals = 2) {
-  
- return  number.toLocaleString(locale, { minimumFractionDigits: decimals });
-}
-/*
+<style>
 
 
 <button className={classes.item}>
@@ -77,21 +57,6 @@ export function formatNum (number, locale = "en-US", decimals = 2) {
 </button>
 */
 
-/*
-  .highlight {
-background-color: hsl(var(--primary / 0.2));
-color: hsl(var(--primary));
-border-radius: var(--radius-xs);
-padding: 0 spacing(0.25);
 
-}
 
-*/
-
-/* No results for "{query}"*/
-
-const results = tokens.filter((token) =>
-  ["name"].some((key) =>
-    token[key].toLowerCase().includes(query.toLowerCase())
-  )
-);
+{query ? `No results for ${query}` : "Loading..."}
