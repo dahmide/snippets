@@ -83,6 +83,8 @@
     
     &[data-starting-style],
     &[data-ending-style] {
+transform: translateX(calc(100% - var(--bleed) + var(--viewport-padding) + 2px));
+  }
     }
     
     &[data-ending-style] {
