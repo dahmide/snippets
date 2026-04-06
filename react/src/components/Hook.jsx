@@ -1,27 +1,28 @@
-function useHook(params, mutationFn, callbacks = {}) {
-  const { onError, onSuccess, onSettled } = callbacks;
-
-  const hookOneResult = useHookOne(params);
-  const hookTwoResult = useHookTwo(params);
-
-  const mutation = useMutation({
-    mutationFn: () => {
-      if (!params.userId) throw new Error("userId is required");
-
-      return mutationFn({
-        ...hookOneResult,
-        ...hookTwoResult,
-      });
-    },
+export default function useFunds(mutationFn, {
     onError,
     onSuccess,
-    onSettled,
-  });
-
-  return {
-    ...mutation,
-    ...hookOneResult,
-    ...hookTwoResult,
-  };
+    onSettled
+} = {}) {
+    const wallet = useWallet();
+    const contracts = useContracts();
+    const mutations = useMutation({
+        mutationFn: () => {
+            if (typeof mutationFn !== "function") {
+                throw new Error("mutationFn must be a function");
+            }
+            return mutationFn({
+                ...wallet,
+                ...contracts
+            })
+        },
+        onError,
+        onSuccess,
+        onSettled,
+    });
+    
+    return {
+        ...mutations,
+        ...contracts,
+        ...wallet,
+    };
 }
-Usage:
